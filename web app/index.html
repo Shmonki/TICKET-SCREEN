@@ -1,53 +1,104 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Мое приложение</title>
+    <title>Локальная гифка</title>
     <style>
         body {
             font-family: Arial;
             padding: 20px;
+            text-align: center;
         }
-        input, button {
-            padding: 10px;
-            margin: 5px;
-            width: 200px;
-        }
-        .gif {
-            width: 250px;
-            display: none; /* Гифка скрыта по умолчанию */
+        #gifButton {
+            cursor: pointer;
+            width: 300px;
         }
     </style>
 </head>
 <body>
-    <h2>Мои данные</h2>
-    
-    <!-- Поля для ввода -->
-    <input type="text" id="textInput" placeholder="Введите текст"><br>
-    <input type="number" id="numberInput" placeholder="Введите число"><br>
-    <button onclick="toggleGif()">Показать гифку</button><br>
-    
-    <!-- Гифка -->
-    <img src="ВАША_ССЫЛКА_НА_ГИФКУ.gif" class="gif" id="gif">
+    <!-- Гифка как кнопка -->
+    <img 
+        src="images/static-frame.png" 
+        id="gifButton" 
+        onclick="toggleGif()"
+    >
 
     <script>
-        // Сохраняем данные при вводе
-        document.getElementById('textInput').addEventListener('input', function() {
-            localStorage.setItem('savedText', this.value);
-        });
-        document.getElementById('numberInput').addEventListener('input', function() {
-            localStorage.setItem('savedNumber', this.value);
-        });
+        let isPlaying = false;
+        const staticImage = 'images/static-frame.png';
+        const animatedGif = 'images/animated.gif';
 
-        // Загружаем сохраненные данные при загрузке страницы
-        window.onload = function() {
-            document.getElementById('textInput').value = localStorage.getItem('savedText') || '';
-            document.getElementById('numberInput').value = localStorage.getItem('savedNumber') || '';
-        };
-
-        // Показ/скрытие гифки
         function toggleGif() {
-            const gif = document.getElementById('gif');
-            gif.style.display = (gif.style.display === 'none') ? 'block' : 'none';
+            const button = document.getElementById('gifButton');
+            if (isPlaying) {
+                button.src = staticImage; // Возвращаем статичный кадр
+            } else {
+                // Добавляем случайный параметр, чтобы гифка перезапускалась
+                button.src = animatedGif + '?t=' + Date.now(); 
+            }
+            isPlaying = !isPlaying;
+        }
+    </script>
+</body>
+</html>
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Гифка-приложение</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+    <style>
+        /* Адаптивные стили */
+        body {
+            font-family: Arial;
+            margin: 0;
+            padding: 15px;
+            background: #f0f0f0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        #gifButton {
+            cursor: pointer;
+            width: 100%; /* Занимает всю ширину экрана */
+            max-width: 300px; /* Но не больше 300px */
+            border-radius: 15px; /* Закругленные углы */
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Тень */
+        }
+
+        /* Для iPhone 13 (ширина 390px) */
+        @media (max-width: 390px) {
+            body {
+                padding: 10px;
+            }
+            #gifButton {
+                max-width: 90%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <img 
+        src="images/static-frame.png" 
+        id="gifButton" 
+        onclick="toggleGif()"
+    >
+
+    <script>
+        // ...ваш предыдущий код toggleGif()...
+
+        // Регистрация Service Worker для PWA
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('service-worker.js')
+                .then(() => console.log('Service Worker зарегистрирован'))
+                .catch(err => console.log('Ошибка:', err));
         }
     </script>
 </body>
